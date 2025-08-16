@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- New "techy" fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace; /* Use Roboto Mono for body text */
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 2rem;
+            background-color: #1e1e1e;
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .textarea-container {
+            position: relative;
+        }
+        /* New Header and Footer Styles */
+header, footer {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #444;
+}
+
+header .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-container img {
+    height: 40px;
+    width: auto;
+}
+
+footer {
+    margin-top: auto; /* Push the footer to the bottom */
+    border-bottom: none;
+    border-top: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-text {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #777;
+}
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            background-color: #2a2a2a;
+            color: #00ffff; /* Techy text color */
+            border: 1px solid #444;
+            resize: vertical;
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            outline: none;
+            font-family: 'Roboto Mono', monospace; /* Apply to textarea specifically */
+        }
+        
+        textarea:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Styles for the new animated placeholders */
+        .animated-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #777;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .15em solid #00ffff; /* The typing cursor */
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+            pointer-events: none; /* Prevents it from blocking clicks on the textarea */
+        }
+
+        .response-placeholder {
+            text-align: center;
+            color: #777;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            padding-top: 1.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            /* The blinking cursor has been removed from this animation */
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .15em solid transparent;
+            animation: typing 3.5s steps(40, end);
+        }
+
+        /* Typing effect keyframes */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        /* Blinking cursor keyframes */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ffff; }
+        }
+
+        .action-button {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-button:hover {
+            background-color: #00ffff;
+            color: #121212;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .action-button:disabled {
+            background-color: #444;
+            color: #777;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .response-box {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-height: 150px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #00ffff; /* Techy text color */
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease-in-out;
+            font-family: 'Roboto Mono', monospace; /* Apply to response text specifically */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* The response actions div is now a separate element */
+        .response-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        .response-action-button {
+            background-color: #333;
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            font-weight: 600;
+        }
+        
+        .response-action-button:hover {
+            background-color: #00ffff;
+            color: #121212;
+        }
+        
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #444;
+            border-top: 4px solid #00ffff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message-box {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #2a2a2a;
+            color: #00ffff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            z-index: 100;
+        }
+
+        .message-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Styles for saved documents list */
+        .saved-documents {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .saved-documents h3 {
+            font-weight: 600;
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-family: 'Fira Code', monospace; /* Apply Fira Code to headings */
+        }
+
+        .saved-documents ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .saved-documents li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .saved-documents li:last-child {
+            border-bottom: none;
+        }
+
+        .saved-documents li:hover {
+            color: #00ffff;
+        }
+
+        /* Loading indicator styling */
+        .loader-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            white-space: nowrap;
+        }
+        
+        .loader-text.hidden {
+            display: none;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.15);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: modalPopIn 0.3s forwards;
+            position: relative; /* Added for close button positioning */
+        }
+        
+        .modal-content.tutorial-content {
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px; /* Increased max width for tutorial content */
+        }
+        
+        @keyframes modalPopIn {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-family: 'Fira Code', monospace; /* Apply Fira Code to modal headings */
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #2a2a2a;
+            color: #00ffff; /* Techy text color */
+            border: 1px solid #444;
+            margin-bottom: 1.5rem;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+        
+        .modal-content input:focus {
+            border-color: #00ffff;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .calculator-title {
+            font-family: 'Fira Code', monospace; /* Apply Fira Code to main title */
+        }
+        
+        /* New tutorial card-based styles */
+        .tutorial-card-container {
+            position: relative;
+            height: 150px; /* Adjust height as needed */
+            overflow: hidden;
+        }
+        
+        .tutorial-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            transform: translateX(100%);
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .tutorial-card.active {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .tutorial-card h4 {
+            font-weight: 600;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-card p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .nav-arrow {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #00ffff;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+        
+        .nav-arrow:hover {
+            color: #fff;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            font-weight: bold;
+        }
+        
+        .close-button:hover {
+            color: #00ffff;
+        }
+        
+        /* Mobile-first responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+            .calculator-title {
+                font-size: 2rem;
+            }
+            .action-button {
+                width: 100%;
+                padding: 0.5rem 1rem;
+            }
+            .modal-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center p-8">
+
+    <div class="container">
+        <header>
+    <div class="logo-container">
+        <img src="Logo.png" alt="Aether Logo">
+        <h1 class="calculator-title text-3xl font-bold text-center text-cyan-400">Aether: Your Creative Companion</h1>
+    </div>
+</header>
+        <!-- The tutorial button is added here -->
+        <div class="flex justify-center">
+            <button id="btn-tutorial" class="action-button">⚙️ How It Works</button>
+        </div>
+
+        <div class="textarea-container">
+            <!-- New animated placeholder for the input area -->
+            <div id="input-placeholder" class="animated-placeholder">Start your story here...</div>
+            <!-- The textarea no longer needs a placeholder attribute -->
+            <textarea id="input-text"></textarea>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center gap-4">
+            <!-- Dropdown for main actions -->
+            <select id="action-select" class="p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-cyan-400 outline-none transition-all w-full md:w-auto">
+                <option value="" disabled selected>Select an action...</option>
+                <option value="brainstorm">✨ Brainstorm Ideas</option>
+                <option value="continue">✨ Continue Writing</option>
+                <option value="summarize">✨ Summarize Text</option>
+                <option value="explain-code">💡 Explain Code</option>
+                <option value="debug-code">🐛 Debug Code</option>
+            </select>
+            
+            <!-- Rewrite button now triggers a modal -->
+            <button id="btn-rewrite" class="action-button">✍️ Rewrite for Tone</button>
+            <button id="btn-save" class="action-button">💾 Save to My Projects</button>
+        </div>
+
+        <div id="response-container" class="response-box relative">
+            <div id="loader" class="loader hidden"></div>
+            <div id="loader-text" class="loader-text hidden"></div>
+            <!-- New animated placeholder for the response area -->
+            <div id="response-placeholder" class="response-placeholder">Your generated text will appear here.</div>
+            <div id="response-text"></div>
+        </div>
+        
+        <!-- The response actions div is now located outside the response-box -->
+        <div id="response-actions" class="response-actions hidden">
+            <button id="btn-copy" class="response-action-button">Copy</button>
+        </div>
+
+        <div id="saved-documents-container" class="saved-documents hidden">
+            <h3>My Saved Projects</h3>
+            <ul id="saved-documents-list"></ul>
+        </div>
+    </div>
+    
+    <!-- The Tone Input Modal -->
+    <div id="tone-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Choose a Tone</h3>
+            <input type="text" id="tone-input" placeholder="e.g., formal, friendly, technical" />
+            <div class="modal-buttons">
+                <button id="tone-confirm-btn" class="action-button">Rewrite</button>
+                <button id="tone-cancel-btn" class="action-button" style="background-color: #555;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Save Project Modal -->
+    <div id="save-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Save Your Project</h3>
+            <input type="text" id="title-input" placeholder="Enter project title" />
+            <div class="modal-buttons">
+                <button id="save-confirm-btn" class="action-button">Save</button>
+                <button id="save-cancel-btn" class="action-button" style="background-color: #555;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Tutorial Modal -->
+    <div id="tutorial-modal" class="modal-overlay hidden">
+        <div class="modal-content tutorial-content">
+            <button id="tutorial-close-btn" class="close-button">&times;</button>
+            <h3>How to Use Aether</h3>
+            
+            <div id="tutorial-card-container" class="tutorial-card-container">
+                <!-- Card 1 -->
+                <div class="tutorial-card active" data-card="1">
+                    <h4>Step 1: Get Started</h4>
+                    <p>Type or paste your text into the top box. This is your starting point for generating content.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="tutorial-card" data-card="2">
+                    <h4>Step 2: Choose an Action</h4>
+                    <p>Select an action from the dropdown menu to brainstorm, continue writing, summarize, or debug code.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="tutorial-card" data-card="3">
+                    <h4>Step 3: Rewrite for Tone</h4>
+                    <p>Click the 'Rewrite' button to change the tone of your text to something like 'formal' or 'casual'.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="tutorial-card" data-card="4">
+                    <h4>Step 4: Save and Copy</h4>
+                    <p>After the AI generates a response, you can copy the text or save it to your projects for later use.</p>
+                </div>
+            </div>
+            
+            <div class="tutorial-navigation">
+                <button id="tutorial-prev-btn" class="nav-arrow" disabled>&#8249;</button>
+                <button id="tutorial-next-btn" class="nav-arrow">&#8250;</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="message-box" class="message-box hidden"></div>
+
+    <script type="module">
+        // --- Global State for Saving ---
+        let contentToSave = '';
+        
+        // --- Local Storage Key ---
+        const PROJECTS_KEY = 'aether_projects';
+
+        // --- DOM Elements (global access) ---
+        const messageBox = document.getElementById('message-box');
+        const savedDocumentsContainer = document.getElementById('saved-documents-container');
+        const savedDocumentsList = document.getElementById('saved-documents-list');
+        const inputTextarea = document.getElementById('input-text');
+        const responseTextDiv = document.getElementById('response-text');
+
+        // --- Helper Functions in Global Scope ---
+        
+        /**
+         * Displays a temporary message to the user.
+         * @param {string} message The message to display.
+         * @param {number} duration The duration in milliseconds to display the message.
+         */
+        const showMessage = (message, duration = 2000) => {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('show');
+            }, 10); // A small delay to trigger the transition
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 300); // Wait for transition to finish before hiding
+            }, duration);
+        };
+        
+        /**
+         * Loads saved documents from local storage and displays them.
+         */
+        const loadSavedDocuments = () => {
+            try {
+                const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY)) || [];
+                savedDocumentsContainer.classList.remove('hidden');
+                savedDocumentsList.innerHTML = '';
+                if (projects.length === 0) {
+                    savedDocumentsList.innerHTML = '<li class="text-gray-500">No projects saved yet.</li>';
+                    return;
+                }
+                projects.forEach((project) => {
+                    const li = document.createElement('li');
+                    li.textContent = project.title || "Untitled Project";
+                    li.dataset.docId = project.id;
+                    li.addEventListener('click', () => {
+                        inputTextarea.value = project.content;
+                        // Hide the placeholder when content is loaded
+                        document.getElementById('input-placeholder').classList.add('hidden');
+                        responseTextDiv.textContent = "Content loaded from project.";
+                    });
+                    savedDocumentsList.appendChild(li);
+                });
+            } catch (e) {
+                console.error("Failed to load projects from local storage:", e);
+                showMessage("Failed to load saved projects.");
+            }
+        };
+
+        /**
+         * Saves the current document to local storage.
+         * @param {string} title The title for the saved document.
+         * @param {string} content The content to save.
+         */
+        const saveDocument = (title, content) => {
+            try {
+                const existingProjects = JSON.parse(localStorage.getItem(PROJECTS_KEY)) || [];
+                const newProject = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    timestamp: new Date().toISOString()
+                };
+                existingProjects.push(newProject);
+                localStorage.setItem(PROJECTS_KEY, JSON.stringify(existingProjects));
+                showMessage("Project saved successfully!");
+                loadSavedDocuments(); // Refresh the list
+            } catch (e) {
+                console.error("Failed to save project to local storage:", e);
+                showMessage("Error saving project. See console for details.");
+            }
+        };
+
+        // All UI and API logic should be inside this DOMContentLoaded listener
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get all necessary DOM elements inside the listener to ensure they are available
+            const actionSelect = document.getElementById('action-select');
+            const btnRewrite = document.getElementById('btn-rewrite');
+            const btnSave = document.getElementById('btn-save');
+            const btnTutorial = document.getElementById('btn-tutorial'); // New tutorial button
+            const loaderDiv = document.getElementById('loader');
+            const loaderTextDiv = document.getElementById('loader-text');
+            const responseActionsDiv = document.getElementById('response-actions');
+            const btnCopy = document.getElementById('btn-copy');
+            
+            // New animated placeholder elements
+            const inputPlaceholder = document.getElementById('input-placeholder');
+            const responsePlaceholder = document.getElementById('response-placeholder');
+
+            // Modal elements
+            const toneModal = document.getElementById('tone-modal');
+            const toneInput = document.getElementById('tone-input');
+            const toneConfirmBtn = document.getElementById('tone-confirm-btn');
+            const toneCancelBtn = document.getElementById('tone-cancel-btn');
+
+            const saveModal = document.getElementById('save-modal');
+            const titleInput = document.getElementById('title-input');
+            const saveConfirmBtn = document.getElementById('save-confirm-btn');
+            const saveCancelBtn = document.getElementById('save-cancel-btn');
+            
+            const tutorialModal = document.getElementById('tutorial-modal'); // New tutorial modal
+            const tutorialCloseBtn = document.getElementById('tutorial-close-btn'); // New tutorial close button
+            const tutorialPrevBtn = document.getElementById('tutorial-prev-btn');
+            const tutorialNextBtn = document.getElementById('tutorial-next-btn');
+            const tutorialCards = document.querySelectorAll('.tutorial-card');
+            
+            let currentCardIndex = 0;
+            
+            const apiKey = "AIzaSyDiHpqD5Zngdv3umN-Hd0iCyRbM_It8tss"; // Canvas will provide API key at runtime
+
+            // --- UI/UX and API Handling ---
+            
+            // Simulates streaming by typing out the text
+            const typeText = (text, element, callback) => {
+                const chars = text.split('');
+                let i = 0;
+                element.textContent = '';
+                const interval = setInterval(() => {
+                    if (i < chars.length) {
+                        element.textContent += chars[i];
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        if (callback) callback();
+                    }
+                }, 10); // Adjust typing speed here
+            };
+
+            const generateContent = async (prompt) => {
+                let attempts = 0;
+                const maxAttempts = 5;
+                const baseDelay = 1000;
+
+                while (attempts < maxAttempts) {
+                    try {
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                        const payload = {
+                            contents: [{
+                                parts: [{ text: prompt }]
+                            }]
+                        };
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 429) {
+                                const delay = baseDelay * Math.pow(2, attempts);
+                                console.warn(`API rate limit exceeded. Retrying in ${delay}ms...`);
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                attempts++;
+                                continue;
+                            }
+                            throw new Error(`API error: ${response.statusText}`);
+                        }
+
+                        const result = await response.json();
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            return result.candidates[0].content.parts[0].text;
+                        } else {
+                            throw new Error('Unexpected API response format or no content found.');
+                        }
+                    } catch (error) {
+                        if (attempts < maxAttempts - 1) {
+                            const delay = baseDelay * Math.pow(2, attempts);
+                            console.error(`Attempt ${attempts + 1} failed: ${error.message}. Retrying in ${delay}ms...`);
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            attempts++;
+                        } else {
+                            throw error;
+                        }
+                    }
+                }
+            };
+            
+            // Map actions to their prompt and loading messages
+            const actionMap = {
+                'brainstorm': {
+                    promptGen: (text) => `Given the following text, brainstorm a few creative ideas related to the topic. Present the ideas as a numbered list.\n\nText: "${text}"`,
+                    loadingMsg: "Brainstorming ideas..."
+                },
+                'continue': {
+                    promptGen: (text) => `Continue the following story. The continuation should be at least two paragraphs long.\n\nStory start: "${text}"`,
+                    loadingMsg: "Continuing your story..."
+                },
+                'summarize': {
+                    promptGen: (text) => `Summarize the following text in a concise and clear paragraph.\n\nText: "${text}"`,
+                    loadingMsg: "Summarizing text..."
+                },
+                'explain-code': {
+                    promptGen: (text) => `Explain the following code in simple terms. Break it down step by step and provide comments for each line. Provide only the explanation, no extra text:\n\nCode: "${text}"`,
+                    loadingMsg: "Explaining code..."
+                },
+                'debug-code': {
+                    promptGen: (text) => `Analyze the following code for potential bugs or errors. If you find any, explain what they are and provide the corrected code. If the code is correct, state that it is correct. Provide only the corrected code or a statement that it is correct, no extra text:\n\nCode: "${text}"`,
+                    loadingMsg: "Debugging code..."
+                }
+            };
+
+            const handleRequest = async (action, text, tone = null) => {
+                if (!text) {
+                    responseTextDiv.textContent = "Please enter some text to get started!";
+                    return;
+                }
+                
+                let promptGenerator, loadingMessage;
+                if (action === 'rewrite') {
+                    promptGenerator = (t) => `Rewrite the following text in a ${tone} tone:\n\nText: "${t}"`;
+                    loadingMessage = `Rewriting for a ${tone} tone...`;
+                } else {
+                    const actionData = actionMap[action];
+                    if (!actionData) {
+                        responseTextDiv.textContent = "Invalid action selected.";
+                        return;
+                    }
+                    promptGenerator = actionData.promptGen;
+                    loadingMessage = actionData.loadingMsg;
+                }
+
+                // Disable UI elements
+                actionSelect.disabled = true;
+                btnRewrite.disabled = true;
+                btnSave.disabled = true;
+                btnTutorial.disabled = true;
+
+                // Hide placeholders and show loader
+                inputPlaceholder.classList.add('hidden');
+                responsePlaceholder.classList.add('hidden');
+                loaderDiv.classList.remove('hidden');
+                loaderTextDiv.classList.remove('hidden');
+                loaderTextDiv.textContent = loadingMessage;
+                responseActionsDiv.classList.add('hidden');
+                responseTextDiv.textContent = '';
+
+                try {
+                    const prompt = promptGenerator(text);
+                    const generatedText = await generateContent(prompt);
+                    typeText(generatedText, responseTextDiv, () => {
+                        responseActionsDiv.classList.remove('hidden');
+                    });
+                } catch (error) {
+                    responseTextDiv.textContent = `Error: ${error.message}. Please try again later.`;
+                    console.error("API call failed:", error);
+                } finally {
+                    loaderDiv.classList.add('hidden');
+                    loaderTextDiv.classList.add('hidden');
+                    // Re-enable UI elements
+                    actionSelect.disabled = false;
+                    btnRewrite.disabled = false;
+                    btnSave.disabled = false;
+                    btnTutorial.disabled = false;
+                    // Reset dropdown
+                    actionSelect.value = '';
+                }
+            };
+
+            // Event listener for the "Copy" button
+            btnCopy.addEventListener('click', () => {
+                const textToCopy = responseTextDiv.textContent;
+                const tempElement = document.createElement('textarea');
+                tempElement.value = textToCopy;
+                document.body.appendChild(tempElement);
+                tempElement.select();
+                try {
+                    const success = document.execCommand('copy');
+                    if (success) {
+                        showMessage("Copied to clipboard!");
+                    } else {
+                        showMessage("Copying failed. Please try again.");
+                    }
+                } catch (err) {
+                    showMessage("Copying failed. Please try again.");
+                }
+                document.body.removeChild(tempElement);
+            });
+
+            // --- Event Listeners for the Modals and Buttons ---
+
+            // Rewrite button click handler (shows tone modal)
+            btnRewrite.addEventListener('click', () => {
+                toneModal.classList.remove('hidden');
+                toneInput.focus();
+            });
+
+            // Tone modal confirm button
+            toneConfirmBtn.addEventListener('click', () => {
+                const text = inputTextarea.value.trim();
+                const tone = toneInput.value.trim() || 'professional';
+                toneModal.classList.add('hidden');
+                handleRequest('rewrite', text, tone);
+            });
+
+            // Tone modal cancel button
+            toneCancelBtn.addEventListener('click', () => {
+                toneModal.classList.add('hidden');
+            });
+
+            // Save button click handler (shows save modal)
+            btnSave.addEventListener('click', () => {
+                const responseContent = responseTextDiv.textContent.trim();
+                const inputContent = inputTextarea.value.trim();
+                const hasResponse = (responseContent !== '' && responseContent !== 'Your generated text will appear here.');
+                const hasInput = inputContent !== '';
+
+                if (!hasResponse && !hasInput) {
+                    showMessage("Nothing to save. Please enter or generate some text.");
+                    return;
+                }
+
+                // Determine which content to save, prioritizing the AI's response
+                contentToSave = hasResponse ? responseContent : inputContent;
+                
+                saveModal.classList.remove('hidden');
+                titleInput.focus();
+            });
+
+            // Save modal confirm button
+            saveConfirmBtn.addEventListener('click', async () => {
+                const title = titleInput.value.trim() || 'Untitled Project';
+                saveModal.classList.add('hidden');
+                if (contentToSave) {
+                    saveDocument(title, contentToSave);
+                    contentToSave = ''; // Reset the global variable
+                }
+            });
+
+            // Save modal cancel button
+            saveCancelBtn.addEventListener('click', () => {
+                saveModal.classList.add('hidden');
+            });
+            
+            // Tutorial button click handler (shows tutorial modal)
+            btnTutorial.addEventListener('click', () => {
+                tutorialModal.classList.remove('hidden');
+                currentCardIndex = 0;
+                updateTutorialCard();
+            });
+
+            // Tutorial modal close button
+            tutorialCloseBtn.addEventListener('click', () => {
+                tutorialModal.classList.add('hidden');
+            });
+            
+            // Tutorial navigation buttons
+            tutorialNextBtn.addEventListener('click', () => {
+                if (currentCardIndex < tutorialCards.length - 1) {
+                    currentCardIndex++;
+                    updateTutorialCard();
+                }
+            });
+            
+            tutorialPrevBtn.addEventListener('click', () => {
+                if (currentCardIndex > 0) {
+                    currentCardIndex--;
+                    updateTutorialCard();
+                }
+            });
+            
+            // Function to show the current tutorial card and manage button visibility
+            const updateTutorialCard = () => {
+                tutorialCards.forEach((card, index) => {
+                    if (index === currentCardIndex) {
+                        card.classList.add('active');
+                    } else {
+                        card.classList.remove('active');
+                    }
+                });
+                
+                // Show/hide navigation buttons
+                tutorialPrevBtn.disabled = currentCardIndex === 0;
+                
+                if (currentCardIndex === tutorialCards.length - 1) {
+                    tutorialNextBtn.style.display = 'none';
+                } else {
+                    tutorialNextBtn.style.display = 'block';
+                }
+            };
+
+            // Dropdown change handler
+            actionSelect.addEventListener('change', (event) => {
+                const action = event.target.value;
+                const text = inputTextarea.value.trim();
+                if (action) {
+                    handleRequest(action, text);
+                }
+            });
+
+            // --- Placeholder visibility logic ---
+            // Hide input placeholder when textarea is focused or has content
+            inputTextarea.addEventListener('focus', () => {
+                inputPlaceholder.classList.add('hidden');
+            });
+            inputTextarea.addEventListener('blur', () => {
+                if (inputTextarea.value.trim() === '') {
+                    inputPlaceholder.classList.remove('hidden');
+                }
+            });
+            inputTextarea.addEventListener('input', () => {
+                if (inputTextarea.value.trim() !== '') {
+                    inputPlaceholder.classList.add('hidden');
+                }
+            });
+
+            // Initial load of saved documents from local storage
+            loadSavedDocuments();
+        });
+    </script>
+    <footer>
+    <div class="logo-container">
+        <img src="Logo.png" alt="Aether Logo">
+    </div>
+    <p class="footer-text">© Aether - Created by NXH - All Rights Reserved</p>
+</footer>
+</body>
+</html>
